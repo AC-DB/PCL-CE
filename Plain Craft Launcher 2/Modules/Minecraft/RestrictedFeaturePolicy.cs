@@ -6,12 +6,17 @@ namespace PCL;
 
 internal static class RestrictedFeaturePolicy
 {
+    // 关闭区域限制
+    private static readonly bool EnforcementEnabled = false;
+    
     internal static RegionAssessment Assess() => RegionPolicy.Evaluate(RegionPolicy.ReadWindowsSignals());
 
-    internal static bool IsRestricted => Assess().IsRestricted;
+    internal static bool IsRestricted => EnforcementEnabled && Assess().IsRestricted;
 
     internal static bool Check(string feature, bool showHint = true)
     {
+        if (!EnforcementEnabled) return true;
+        
         var assessment = Assess();
         if (!assessment.IsRestricted) return true;
 
